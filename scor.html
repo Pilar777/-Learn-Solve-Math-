@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Study Score </title>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f8fb;
+            color: #333;
+        }
+        header {
+            background-color: #4CAF50;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            font-size: 2em;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        #adminStatus {
+            position: absolute;
+            top: 50px;
+            right: 1px;
+            background: #4CAF50;
+            padding: 1px 1px;
+            color: white;
+            border-radius: 5px;
+        }
+        #adminStatus a {
+            color: white;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .add-form input, .add-form button {
+            padding: 10px;
+            margin: 10px 5px;
+            font-size: 1em;
+            border-radius: 5px;
+        }
+        .add-form input[type="text"], .add-form input[type="number"] {
+            border: 1px solid #ddd;
+            width: calc(100% - 22px);
+            margin-bottom: 20px;
+        }
+        .add-form button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .add-form button:hover {
+            background-color: #45a049;
+        }
+        .sort-options select {
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 1em;
+            margin-right: 10px;
+        }
+        .grade {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        .badge {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+    <header>
+      🎓Score-board
+    </header>
+    <div class="container">
+        <div id="adminStatus"></div>
+
+        <!-- Add Student Form -->
+        <div class="add-form">
+            <input type="text" id="studentName" placeholder="Student Name">
+            <input type="number" id="studentScore" placeholder="Score (0-100000)">
+            <button onclick="addStudent()">Add Student</button>
+        </div>
+
+        <!-- Score Table -->
+        <table id="scoreTable">
+            <thead>
+                <tr>
+                    <th>Roll</th>
+                    <th>Name</th>
+                    <th>Score</th>
+                    <th>Grade</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <!-- Data will be inserted here -->
+            </tbody>
+        </table>
+
+        <!-- Sorting Options -->
+        <div class="sort-options" style="margin-top: 10px;">
+            <select id="sortBy">
+                <option value="scoreHigh">Score (High to Low)</option>
+                <option value="scoreLow">Score (Low to High)</option>
+                <option value="name">Name (A-Z)</option>
+            </select>
+            <button onclick="sortData()">Sort</button>
+        </div>
+    </div>
+
+    <script>
+        // Firebase initialization
+        const firebaseConfig = {
+            databaseURL: "https://rank-list-bd6d7-default-rtdb.firebaseio.com/"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const studentsRef = database.ref('students');
+
+        let students = [];
+        let isAdminLoggedIn = localStorage.getItem('isAdminLoggedIn') === 'true';
+
+        // Realtime data listener
+        studentsRef.on('value', (snapshot) => {
+            const data = snapshot.val();
+            students = [];
+            if(data) {
+                Object.keys(data).forEach(key => {
+                    students.push({
+                        id: key,
+                        name: data[key].name,
+                        score: data[key].score,
+                        timestamp: data[key].timestamp
+                    });
+                });
+                sortData(); // Initial sort
+            }
+            updateTable();
+        });
+
+        function addStudent() {
+            const name = document.getElementById('studentName').value;
+            const score = parseInt(document.getElementById('studentScore').value);
+
+            if (name && !isNaN(score)) {
+                studentsRef.push({
+                    name,
+                    score,
+                    timestamp: Date.now()
+                });
+                document.getElementById('studentName').value = '';
+                document.getElementById('studentScore').value = '';
+            }
+        }
+
+        function updateTable() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            students.forEach((student, index) => {
+                const grade = student.score                              >= 500 ? 'A+' : student.score                          >= 300 ? 'A' : student.score >= 200 ? 'B' : student.score >= 100 ? 'C' : student.score >= 60 ? 'D' : 'F';
+                const gradeClass = student.score >= 500 ? 'grade' : 'badge';
+                const row = `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${student.name}</td>
+                        <td>${student.score}</td>
+                        <td class="${gradeClass}">${grade}</td>
+                        <td>
+                            ${isAdminLoggedIn ? 
+                                `<button onclick="editStudent('${student.id}')">✏️ Edit</button>
+                                <button onclick="deleteStudent('${student.id}')">🗑️ Delete</button>` 
+                                : 'Login to edit'}
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        function checkAdminStatus() {
+            const adminStatus = document.getElementById('adminStatus');
+            if(isAdminLoggedIn) {
+                adminStatus.innerHTML = 'Admin Mode | <a href="javascript:logout()">Logout</a>';
+            } else {
+                adminStatus.innerHTML = '<a href="javascript:showLogin()">Admin Login</a>';
+            }
+        }
+
+        function showLogin() {
+            const email = prompt('Enter admin email:');
+            const password = prompt('Enter admin password:');
+            
+            if(email === 'Pilar777@gmail.com' && password === '112233P') {
+                isAdminLoggedIn = true;
+                localStorage.setItem('isAdminLoggedIn', 'true');
+                checkAdminStatus();
+                updateTable();
+                alert('Admin login successful!');
+            } else {
+                alert('Invalid credentials!');
+            }
+        }
+
+        function logout() {
+            isAdminLoggedIn = false;
+            localStorage.removeItem('isAdminLoggedIn');
+            checkAdminStatus();
+            updateTable();
+            alert('Logged out successfully!');
+        }
+
+        function deleteStudent(studentId) {
+            if(!isAdminLoggedIn) return alert('Admin access required!');
+            studentsRef.child(studentId).remove();
+        }
+
+        function editStudent(studentId) {
+            if(!isAdminLoggedIn) return alert('Admin access required!');
+            const student = students.find(s => s.id === studentId);
+            const newScore = prompt("Enter new score:", student.score);
+            if (!isNaN(newScore)) {
+                studentsRef.child(studentId).update({
+                    score: parseInt(newScore)
+                });
+            }
+        }
+
+        function sortData() {
+            const sortBy = document.getElementById('sortBy').value;
+            
+            if (sortBy === 'scoreHigh') {
+                students.sort((a, b) => b.score - a.score);
+            } else if (sortBy === 'scoreLow') {
+                students.sort((a, b) => a.score - b.score);
+            } else {
+                students.sort((a, b) => a.name.localeCompare(b.name));
+            }
+            
+            updateTable();
+        }
+
+        // Initial setup
+        checkAdminStatus();
+    </script>
+</body>
+</html>

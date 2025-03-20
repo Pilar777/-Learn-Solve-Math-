@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess Game</title>
+    <link rel="stylesheet" href="stylec.css">
+</head>
+<body>
+  <button onclick="window.location.href='gm.html'">Go Back</button>
+    <div class="game-header">
+        <h1>Chess Game</h1>
+        <div class="turn-display" id="turn-display">White's Turn</div>
+    </div>
+
+    <div class="board" id="board"></div>
+
+    <div class="game-info">
+        <div class="captured-pieces">
+            <div class="captured-white">
+                <h3>Captured by Black:</h3>
+                <div id="white-captured"></div>
+            </div>
+            <div class="captured-black">
+                <h3>Captured by White:</h3>
+                <div id="black-captured"></div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="new-game">New Game</button>
+            <button id="undo-move">Undo Move</button>
+        </div>
+    </div>
+
+    <script src="chess.js"></script>
+</body>
+</html>

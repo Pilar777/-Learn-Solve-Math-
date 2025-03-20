@@ -1,0 +1,135 @@
+
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>গণিতের অধ্যায়</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #121212;
+            color: white;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        header {
+            background-color: #1a1a1a;
+            padding: 20px;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 36px;
+            color: #1db954;
+        }
+        .profile-img {
+            border-radius: 50%;
+            width: 180px;
+            height: 180px;
+            border: 5px solid #1db954;
+            margin-top: 20px;
+        }
+        .playlist-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .playlist-box {
+            background-color: #1a1a1a;
+            border: 2px solid #333;
+            width: 200px;
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: transform 0.3s, background-color 0.3s;
+        }
+        .playlist-box:hover {
+            transform: scale(1.1);
+            background-color: #333;
+        }
+        .playlist-box h3 {
+            margin: 0;
+            font-size: 20px;
+            color: #1db954;
+        }
+        footer {
+            background-color: #1a1a1a;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            color: white;
+            font-size: 14px;
+            text-align: center;
+        }
+        .back-button {
+            background-color: #1db954;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        .back-button:hover {
+            background-color: #333;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>গণিতের অধ্যায়</h1>
+    </header>
+    <button class="back-button" onclick="window.location.href='about.html'">Back</button>
+    <div class="playlist-container">
+        <div class="playlist-box" onclick="window.location.href='one.html'">
+            <h3>বাস্তব সংখ্যা</h3>
+        </div>
+        <div class="playlist-box" onclick="window.location.href='two.html'">
+            <h3>সেট ও ফাংশন</h3>
+        </div>
+        <div class="playlist-box" onclick="window.location.href='three.html'">
+            <h3>সসীম ধারা</h3>
+        </div>
+        <div class="playlist-box" onclick="window.location.href='four.html'">
+            <h3>সূচক ও লগারিদম</h3>
+        </div>
+        <div class="playlist-box" onclick="window.location.href='five.html'">
+            <h3>ত্রিকোণমিতি</h3>
+        </div>
+        <div class="playlist-box" onclick="window.location.href='six.html'">
+            <h3>দূরত্ব ও উচ্চতা</h3>
+        </div>
+        <div class="playlist-box" onclick="window.location.href='seven.html'">
+            <h3>বীজগাণিতিক রাশি</h3>
+        </div>
+        <div class="playlist-box" onclick="window.location.href='eight.html'">
+            <h3>বৃত্ত</h3>
+        </div>
+        <div class="playlist-box" onclick="window.location.href='nine.html'">
+            <h3>পরিসংখ্যান</h3>
+        </div>
+        <div class="playlist-box" onclick="window.location.href='ten.html'">
+            <h3>পরিমিতি</h3>
+        </div>
+        <div class="playlist-box" onclick="window.location.href='eleven.html'">
+            <h3>ব্যবহারিক জ্যামিতি</h3>
+        </div>
+    </div>
+
+
+
+    <footer>
+        ©Md.Yamin Islam 
+    </footer>
+</body>
+</html>

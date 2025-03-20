@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Excellence - Learn & Solve Math</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2C3E50;
+            --secondary: #2980B9;
+            --accent: #27AE60;
+            --light: #F8F9FA;
+            --dark: #2C3E50;
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            --shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.7;
+        }
+
+        /* Header Styles */
+        header {
+            background: var(--gradient);
+            padding: 1rem 5%;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            font-size: 1.5rem;
+            gap: 1rem;
+        }
+
+        .logo img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.2);
+            object-fit: cover;
+            padding: 3px;
+        }
+
+        /* Original Sidebar Styles */
+        .menu-btn {
+            font-size: 1.5rem;
+            color: white;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .menu-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -250px;
+            width: 250px;
+            height: 100%;
+            background: white;
+            box-shadow: -2px 0 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            padding-top: 80px;
+            z-index: 999;
+        }
+
+        .sidebar.open {
+            transform: translateX(-250px);
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .sidebar ul li a {
+            text-decoration: none;
+            color: var(--dark);
+            display: block;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        .sidebar ul li a:hover {
+            color: var(--secondary);
+        }
+
+        /* Premium Hero Section */
+        .hero-section {
+            text-align: center;
+            padding: 8rem 0 6rem;
+            background: var(--gradient);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            bottom: -50px;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: var(--light);
+            transform: skewY(-3deg);
+        }
+
+        .hero-section h1 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .hero-section p {
+            font-size: 1.3rem;
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        /* Premium Study Grid */
+        .study-menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem;
+            padding: 4rem 0;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .study-menu li {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border: 1px solid rgba(0,0,0,0.05);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .study-menu li:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+        }
+
+        .study-menu li::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--accent);
+            transform: scaleX(0);
+            transition: transform 0.4s;
+        }
+
+        .study-menu li:hover::before {
+            transform: scaleX(1);
+        }
+
+        .study-menu i {
+            font-size: 2.8rem;
+            color: var(--secondary);
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: transform 0.3s;
+        }
+
+        .study-menu span {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--dark);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Premium CTA Button */
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.3rem 3rem;
+            background: var(--accent);
+            color: white !important;
+            border-radius: 35px;
+            text-decoration: none;
+            margin-top: 2rem;
+            transition: all 0.4s;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: 0 5px 20px rgba(39, 174, 96, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: 0.5s;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(39, 174, 96, 0.4);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2.5rem;
+            }
+            
+            .study-menu {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                padding: 2rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="#" class="logo">
+            <img class="profile-img" src="images/img (k).jpg" alt="Learn & Solve Math">
+            <span>Learn & Solve Math</span>
+        </a>
+        <div class="menu-btn" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </div>
+    </header>
+
+    <nav class="sidebar" id="sidebar">
+        <ul>
+            <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
+            <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section class="hero-section">
+             <h1>Brothers & Sisters 🌿</h1>
+            <p aria-label="Greeting message">"Assalamu Alaikum wa Rahmatullahi wa Barakatuh"</p>
+           
+        </section>
+
+        <div class="content-box">
+            <ul class="study-menu">
+                <li>
+                    <i class="fas fa-file-alt"></i>
+                    <span>Notes</span>
+                </li>
+                <li>
+                    <i class="fas fa-video"></i>
+                    <span>Tutorial Videos</span>
+                </li>
+                <li>
+                    <i class="fas fa-robot"></i>
+                    <span>AI Assistant</span>
+                </li>
+                <li>
+                    <i class="fas fa-calculator"></i>
+                    <span>Calculator</span>
+                </li>
+                <li>
+                    <i class="fas fa-users"></i>
+                    <span>Study Group</span>
+                </li>
+                <li>
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Exam Routine</span>
+                </li>
+                <li>
+                    <i class="fas fa-trophy"></i>
+                    <span>Score Board</span>
+                </li>
+            </ul>
+
+          <div style="text-align: center; margin: 4rem 0;">
+    <a href="about.html" class="cta-button">
+        <i class="fas fa-gem"></i>
+        Start Premium Trial (Free)
+    </a>
+</div>
+        </div>
+    </main>
+
+    <script>
+        function toggleMenu() {
+            document.getElementById("sidebar").classList.toggle("open");
+        }
+        
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const menuBtn = document.querySelector('.menu-btn');
+            
+            if (!sidebar.contains(event.target) && !menuBtn.contains(event.target)) {
+                sidebar.classList.remove("open");
+            }
+        });
+    </script>
+</body>
+</html>

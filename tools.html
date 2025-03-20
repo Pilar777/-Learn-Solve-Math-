@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Tools - Learn & Solve Math</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* Header Styles */
+        header {
+            background: var(--gradient);
+            padding: 1rem;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: white;
+            text-decoration: none;
+        }
+
+        .profile-img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid var(--light);
+            object-fit: cover;
+        }
+
+        /* Sidebar Styles */
+        .menu-btn {
+            font-size: 1.5rem;
+            color: white;
+            cursor: pointer;
+            display: block;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -250px;
+            width: 250px;
+            height: 100%;
+            background: white;
+            box-shadow: -2px 0 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            padding-top: 80px;
+        }
+
+        .sidebar.open {
+            transform: translateX(-250px);
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .sidebar ul li a {
+            text-decoration: none;
+            color: var(--dark);
+            display: block;
+            font-size: 1.1rem;
+        }
+
+        /* Tools Section Styles */
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: var(--gradient);
+            color: white;
+            margin-bottom: 3rem;
+        }
+
+        .tool-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .tool-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: transform 0.2s ease;
+            min-height: 380px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tool-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tool-icon {
+            font-size: 1.8rem;
+            color: var(--secondary);
+            padding: 0.8rem;
+            border-radius: 50%;
+            background: var(--light);
+            flex-shrink: 0;
+        }
+
+        /* Calculator Styles */
+        .calculator {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 0.5rem;
+            margin-top: auto;
+        }
+
+        .calc-display {
+            grid-column: span 4;
+            height: 60px;
+            padding: 0.8rem;
+            font-size: 1.4rem;
+            background: var(--light);
+            border: 2px solid var(--secondary);
+            border-radius: 8px;
+            text-align: right;
+        }
+
+        .calc-btn {
+            padding: 0.8rem;
+            font-size: 1.1rem;
+            border: none;
+            background: var(--light);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        /* Puzzle Game Styles */
+        .puzzle-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            max-width: 280px;
+            margin: 0 auto;
+        }
+
+        .puzzle-tile {
+            aspect-ratio: 1;
+            background: var(--secondary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .tool-container {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .tool-card {
+                min-height: auto;
+                padding: 1.2rem;
+            }
+            
+            .puzzle-grid {
+                max-width: 260px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="#" class="logo">
+            <img class="profile-img" src="images/img (k).jpg" alt="Learn & Solve Math">
+            <span>Learn & Solve Math</span>
+        </a>
+        <div class="menu-btn" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </div>
+    </header>
+
+    <nav class="sidebar" id="sidebar">
+        <ul>
+            <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="about.html"><i class="fas fa-info-circle"></i> ⬅️Exit</a></li>
+            <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="hero">
+        <h1>Math Tools Center</h1>
+        <p>Interactive tools to enhance your learning experience</p>
+    </div>
+
+    <div class="tool-container">
+        <!-- Calculator Section -->
+        <div class="tool-card">
+            <div class="tool-header">
+                <i class="fas fa-calculator tool-icon"></i>
+                <h2>Scientific Calculator</h2>
+            </div>
+            <div class="calculator">
+                <div class="calc-display" id="display">0</div>
+                <button class="calc-btn" onclick="clearDisplay()">C</button>
+                <button class="calc-btn" onclick="appendToDisplay('%')">%</button>
+                <button class="calc-btn" onclick="appendToDisplay('/')">/</button>
+                <button class="calc-btn" onclick="appendToDisplay('*')">×</button>
+                <button class="calc-btn" onclick="appendToDisplay('7')">7</button>
+                <button class="calc-btn" onclick="appendToDisplay('8')">8</button>
+                <button class="calc-btn" onclick="appendToDisplay('9')">9</button>
+                <button class="calc-btn" onclick="appendToDisplay('-')">-</button>
+                <button class="calc-btn" onclick="appendToDisplay('4')">4</button>
+                <button class="calc-btn" onclick="appendToDisplay('5')">5</button>
+                <button class="calc-btn" onclick="appendToDisplay('6')">6</button>
+                <button class="calc-btn" onclick="appendToDisplay('+')">+</button>
+                <button class="calc-btn" onclick="appendToDisplay('1')">1</button>
+                <button class="calc-btn" onclick="appendToDisplay('2')">2</button>
+                <button class="calc-btn" onclick="appendToDisplay('3')">3</button>
+                <button class="calc-btn" onclick="calculate()" style="grid-row: span 2">=</button>
+                <button class="calc-btn" onclick="appendToDisplay('0')" style="grid-column: span 2">0</button>
+                <button class="calc-btn" onclick="appendToDisplay('.')">.</button>
+            </div>
+        </div>
+
+        <!-- Puzzle Game Section -->
+        <div class="tool-card">
+            <div class="tool-header">
+                <i class="fas fa-puzzle-piece tool-icon"></i>
+                <h2>Puzzle Game's</h2>
+            </div>
+            <div class="puzzle-grid" id="puzzleGrid"></div>
+            <button class="calc-btn" onclick="window.location.href='gm.html'">
+                Play Full Puzzle Game
+            </button>
+        </div>
+    </div>
+ <div class="tool-container">
+        <!-- AI Assistant Section -->
+        <div class="tool-card">
+            <div class="tool-header">
+                <i class="fas fa-robot tool-icon"></i>
+                <h2>AI Math Assistant</h2>
+            </div>
+            <div class="chat-container">
+                <div class="chat-message user-message">ask me any type simple question🤖</div>
+                <div class="chat-message ai-message">
+                </div>
+                <button class="calc-btn" onclick="window.location.href='ai.html'">
+                    Open Full AI Assistant
+                </button>
+            </div>
+        </div>
+
+        <!-- Score Board Section -->
+        <div class="tool-card">
+            <div class="tool-header">
+                <i class="fas fa-clipboard-list tool-icon"></i>
+                <h2>Score Board</h2>
+            </div>
+            <table class="score-table">
+                <thead>
+                    <tr>
+                        <th>Roll</th>
+                        <th>Name</th>
+                        <th>Score</th>
+                        <th>grade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>student-1</td>
+                        <td>670</td>
+                        <td><span style="color:green;">A+</span></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Student-2</td>
+                        <td>410</td>
+                        <td><span style="color:orange;">B</span></td>
+                    </tr>
+                </tbody>
+            </table>
+            <button class="calc-btn" onclick="window.location.href='scor.html'">
+                View Full Scoreboard
+            </button>
+        </div>
+    <script>
+        // Sidebar Toggle Function
+        function toggleMenu() {
+            document.getElementById("sidebar").classList.toggle("open");
+        }
+
+        // Calculator Logic
+        let displayValue = '0';
+        const display = document.getElementById('display');
+
+        const updateDisplay = () => display.textContent = displayValue;
+        
+        const appendToDisplay = value => {
+            displayValue = displayValue === '0' && value !== '.' ? value : displayValue + value;
+            updateDisplay();
+        }
+
+        const clearDisplay = () => {
+            displayValue = '0';
+            updateDisplay();
+        }
+
+        const calculate = () => {
+            try {
+                displayValue = eval(displayValue).toString();
+            } catch {
+                displayValue = 'Error';
+            }
+            updateDisplay();
+        }
+
+        // Puzzle Game Logic
+        let puzzleState = [1,2,3,4,5,6,7,8,''];
+        
+        const initializePuzzle = () => {
+            const puzzleGrid = document.getElementById('puzzleGrid');
+            puzzleGrid.innerHTML = '';
+            
+            puzzleState.sort(() => Math.random() - 0.5)
+                .forEach((num, i) => {
+                    const tile = document.createElement('div');
+                    tile.className = 'puzzle-tile';
+                    tile.textContent = num;
+                    tile.onclick = () => moveTile(i);
+                    puzzleGrid.appendChild(tile);
+                });
+        }
+
+        const moveTile = index => {
+            const tiles = [...document.querySelectorAll('.puzzle-tile')];
+            const emptyIndex = tiles.findIndex(t => !t.textContent);
+            
+            if ([index-1, index+1, index-3, index+3].includes(emptyIndex)) {
+                [tiles[index].textContent, tiles[emptyIndex].textContent] = 
+                [tiles[emptyIndex].textContent, tiles[index].textContent];
+                checkWin();
+            }
+        }
+
+        const checkWin = () => {
+            const values = [...document.querySelectorAll('.puzzle-tile')]
+                .slice(0,8).map(t => t.textContent);
+            if(values.every((v,i) => v === `${i+1}`)) alert('Congratulations! Puzzle solved!');
+        }
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', initializePuzzle);
+    </script>
+</body>
+</html>

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GROUP RULES</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #FFD700;
+            --secondary-color: #FFA500;
+            --dark-bg: #0F172A;
+            --text-light: #F8FAFC;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+            color: var(--text-light);
+            line-height: 1.8;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            padding: 3rem;
+            border-radius: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(120deg, 
+                rgba(255, 215, 0, 0.1) 0%,
+                rgba(255, 165, 0, 0.05) 100%);
+            z-index: -1;
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .profile-img {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1.5rem;
+            border: 3px solid var(--primary-color);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .rules-section {
+            margin: 3rem 0;
+        }
+
+        .rules-list {
+            list-style: none;
+            counter-reset: rule-counter;
+        }
+
+        .rules-list li {
+            counter-increment: rule-counter;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .rules-list li:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+        }
+
+        .rules-list li::before {
+            content: counter(rule-counter);
+            position: absolute;
+            left: -25px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: var(--dark-bg);
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 1.2rem 2.5rem;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: var(--dark-bg);
+            border-radius: 1rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 2rem;
+            box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::after {
+            content: '→';
+            margin-left: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(255, 215, 0, 0.5);
+        }
+
+        .cta-button:hover::after {
+            transform: translateX(3px);
+        }
+
+        .note-text {
+            font-size: 0.95rem;
+            color: #CBD5E1;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 4px solid var(--primary-color);
+            border-radius: 0.75rem;
+            line-height: 1.7;
+            letter-spacing: 0.3px;
+        }
+
+        .exit-btn {
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: linear-gradient(45deg, #3B82F6, #2563EB);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .exit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            
+            .container {
+                padding: 2rem;
+                border-radius: 1.5rem;
+            }
+            
+            .profile-img {
+                width: 110px;
+                height: 110px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .rules-list li {
+                padding: 1.5rem;
+                margin-left: 30px;
+            }
+            
+            .rules-list li::before {
+                left: -30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="profile-header">
+            <img class="profile-img" src="images/img (k).jpg" alt="Profile Image">
+            <h1>Bassic Info.</h1>
+            <a href="about.html" class="exit-btn">
+                ⬅️ Exit
+            </a>
+        </div>
+
+        <div class="rules-section">
+            <ul class="rules-list">
+                <li>Respect all group members and maintain professional communication</li>
+                <li>Keep discussions focused on academic topics and study-related matters</li>
+                <li>No spam or irrelevant content allowed</li>
+                <li>Share resources in designated channels only</li>
+                <li>Maintain confidentiality of shared materials</li>
+            </ul>
+
+            <div class="note-text">
+                <p>This platform is completely free.</p>
+                <p style="font-size: 11px; margin-top: 8px;">তবে বেশি আশা রাখবা না।</p>
+                <p style="font-size: 10px; margin-top: 6px; opacity: 0.9;">শেখাটা তোমার নিজের কাছে, আর practice এর থেকে ভালো কোন tips আমার জানা নাই। তবে, কিভাবে practice করলে দ্রুত Chapter শেষ করে ভালো একটা preparetion নিতে পারবা, সেটার guide করার চেষ্টা করবো।</p>
+            </div>
+
+            <a href="https://m.me/j/AbaluAxVRiykSlYD/" class="cta-button" target="_blank">
+                Join Study Group
+            </a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mcq</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+:root {
+    --primary-color: #2980b9;
+    --secondary-color: #6dd5ed;
+    --bg-color: #f4f7fa;
+    --text-color: #333;
+    --correct-color: #2ecc71;
+    --incorrect-color: #e74c3c;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+header {
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 1.2rem;
+    text-align: center;
+    position: relative;
+}
+
+.back-button {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: white;
+    color: var(--primary-color);
+    border: none;
+    padding: 8px 15px;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+}
+
+.back-button:hover {
+    background: #ddd;
+}
+
+.container {
+    width: 90%;
+    max-width: 700px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.question {
+    font-size: 1.3rem;
+    font-weight: 500;
+    margin-bottom: 1.2rem;
+}
+
+.options-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 1.5rem;
+}
+
+@media (min-width: 600px) {
+    .options-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.option {
+    padding: 12px;
+    background: #ecf0f1;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.option:hover {
+    transform: translateY(-2px);
+    background: #dfe6e9;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.button {
+    display: block;
+    width: 100%;
+    max-width: 180px;
+    padding: 10px;
+    margin: 1rem auto 0;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.button:hover {
+    background: #2471a3;
+    transform: scale(1.05);
+}
+
+.feedback {
+    font-weight: 500;
+    margin-top: 1rem;
+    padding: 10px;
+    border-radius: 8px;
+    display: none;
+}
+
+.feedback.visible {
+    display: block;
+    animation: fadeIn 0.5s ease;
+}
+
+.results {
+    display: none;
+    font-size: 1.2rem;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+    </style>
+</head>
+<body>
+    <header>
+        <button class="back-button" onclick="location.href='gm.html'">← Back</button>
+        <h1>Mcq Poll</h1>
+    </header>
+
+    <main class="container">
+        <section id="quiz-section">
+            <div class="question" id="question"></div>
+            <div class="options-grid" id="options-container"></div>
+            <button class="button" id="next-button" disabled>পরবর্তী প্রশ্ন</button>
+        </section>
+
+        <div class="feedback" id="feedback"></div>
+        <section class="results" id="results-section"></section>
+    </main>
+
+<script>
+    class Quiz {
+        constructor() {
+            this.questions = [
+                { question: "জাপানের রাজধানী কি?", options: ["টোকিও", "সিওল", "বেইজিং", "হানোই"], answer: 0 },
+                { question: "আমাদের সৌরজগতের সবচেয়ে বড় গ্রহ কোনটি?", options: ["পৃথিবী", "মঙ্গল", "বৃহস্পতি", "শনি"], answer: 2 },
+                { question: "আপেক্ষিকতার তত্ত্ব কে আবিষ্কার করেছিলেন?", options: ["আইজাক নিউটন", "আলবার্ট আইনস্টাইন", "গ্যালিলিও গ্যালিলি", "নিকোলা টেসলা"], answer: 1 },
+                { question: "পানির রাসায়নিক সংকেত কী?", options: ["H2O", "O2", "CO2", "H2"], answer: 0 },
+                { question: "বিশ্বের সবচেয়ে বড় মহাদেশ কোনটি?", options: ["আফ্রিকা", "এশিয়া", "ইউরোপ", "উত্তর আমেরিকা"], answer: 1 },
+                { question: "144-এর বর্গমূল কত?", options: ["10", "12", "14", "16"], answer: 1 },
+                { question: "সমুদ্রপৃষ্ঠে পানির ফুটন্ত তাপমাত্রা কত?", options: ["90°C", "100°C", "110°C", "120°C"], answer: 1 },
+                { question: "যুক্তরাষ্ট্রের প্রথম প্রেসিডেন্ট কে ছিলেন?", options: ["জর্জ ওয়াশিংটন", "থমাস জেফারসন", "এব্রাহাম লিংকন", "জন অ্যাডামস"], answer: 0 }
+            ];
+            
+            this.currentQuestion = 0;
+            this.correctAnswers = 0;
+            this.elements = {
+                question: document.getElementById('question'),
+                optionsContainer: document.getElementById('options-container'),
+                nextButton: document.getElementById('next-button'),
+                feedback: document.getElementById('feedback'),
+                results: document.getElementById('results-section')
+            };
+
+            this.init();
+        }
+
+        init() {
+            this.elements.optionsContainer.addEventListener('click', (e) => this.handleOptionSelect(e));
+            this.elements.nextButton.addEventListener('click', () => this.nextQuestion());
+            this.loadQuestion();
+        }
+
+        loadQuestion() {
+            const q = this.questions[this.currentQuestion];
+            this.elements.question.textContent = q.question;
+            this.elements.optionsContainer.innerHTML = q.options.map((option, i) => 
+                `<div class="option" data-index="${i}">${String.fromCharCode(65 + i)}) ${option}</div>`
+            ).join('');
+
+            this.elements.nextButton.disabled = true;
+            this.elements.feedback.classList.remove('visible');
+        }
+
+        handleOptionSelect(e) {
+            const option = e.target.closest('.option');
+            if (!option) return;
+
+            const selectedIndex = parseInt(option.dataset.index);
+            const correctIndex = this.questions[this.currentQuestion].answer;
+            
+            document.querySelectorAll('.option').forEach(opt => opt.style.background = '#ecf0f1');
+
+            if (selectedIndex === correctIndex) {
+                option.style.background = '#2ecc71';
+                this.correctAnswers++;
+                this.showFeedback('সঠিক উত্তর!', 'correct');
+            } else {
+                option.style.background = '#e74c3c';
+                this.showFeedback('ভুল উত্তর!', 'incorrect');
+            }
+
+            this.elements.nextButton.disabled = false;
+        }
+
+        showFeedback(text, type) {
+            this.elements.feedback.textContent = text;
+            this.elements.feedback.classList.add('visible');
+        }
+
+        nextQuestion() {
+            this.currentQuestion++;
+            if (this.currentQuestion < this.questions.length) {
+                this.loadQuestion();
+            } else {
+                this.showResults();
+            }
+        }
+
+        showResults() {
+            this.elements.results.innerHTML = `✅ সঠিক উত্তর: ${this.correctAnswers} ❌ ভুল উত্তর: ${this.questions.length - this.correctAnswers}`;
+            this.elements.results.style.display = 'block';
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => new Quiz());
+</script>
+</body>
+</html>

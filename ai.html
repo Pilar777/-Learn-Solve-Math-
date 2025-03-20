@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Pilu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/your-kit-code.js" crossorigin="anonymous"></script>
+ <style>
+        :root {
+            --primary: #10B981;
+            --secondary: #3B82F6;
+            --accent: #F59E0B;
+            --dark-1: #111827;
+            --dark-2: #1F2937;
+            --dark-3: #374151;
+            --text-primary: #F9FAFB;
+            --text-secondary: #9CA3AF;
+            --chat-width: min(100%, 800px);
+            --mobile-breakpoint: 768px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            display: flex;
+            height: 100vh;
+            background: var(--dark-1);
+            color: var(--text-primary);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Enhanced Responsive Sidebar */
+        .sidebar {
+            width: 280px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--dark-2) 0%, var(--dark-1) 100%);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 4px 0 15px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+            position: relative;
+            z-index: 100;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                width: 85%;
+                transform: translateX(-100%);
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            left: 1rem;
+            top: 1rem;
+            z-index: 1000;
+            background: var(--dark-2);
+            border: none;
+            color: var(--text-primary);
+            padding: 0.8rem;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+        }
+
+        .app-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 2rem;
+            padding: 12px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .app-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Chat History with Responsive Items */
+        .chat-history {
+            margin-top: 2rem;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .chat-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: rgba(255,255,255,0.03);
+            position: relative;
+        }
+
+        .chat-item:hover {
+            background: rgba(59,130,246,0.1);
+        }
+
+        @media (max-width: 768px) {
+            .chat-item {
+                padding: 1rem;
+                margin: 0.5rem 0;
+            }
+        }
+
+        /* Main Chat Area with Responsive Design */
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--dark-1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+            scroll-behavior: smooth;
+            transition: padding 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .messages-container {
+                padding: 1rem;
+            }
+        }
+
+        /* Advanced Message Bubbles */
+        .message {
+            max-width: var(--chat-width);
+            margin: 1.5rem auto;
+            display: flex;
+            gap: 1.5rem;
+            animation: messageAppear 0.4s ease forwards;
+            position: relative;
+        }
+
+        @keyframes messageAppear {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1.2rem;
+        }
+
+        .message.ai .avatar {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        .message.user .avatar {
+            background: linear-gradient(135deg, var(--dark-3), var(--accent));
+        }
+
+        .message-content {
+            flex: 1;
+            padding: 1.25rem;
+            border-radius: 16px;
+            background: var(--dark-2);
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow-wrap: anywhere;
+        }
+
+        @media (max-width: 480px) {
+            .message {
+                gap: 1rem;
+                margin: 1rem auto;
+            }
+            .message .avatar {
+                width: 32px;
+                height: 32px;
+                font-size: 1rem;
+            }
+            .message-content {
+                padding: 1rem;
+            }
+        }
+
+        /* Enhanced Input Area with Mobile Optimization */
+        .input-container {
+            padding: 1.5rem;
+            background: var(--dark-2);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+        }
+
+        .input-wrapper {
+            max-width: var(--chat-width);
+            margin: 0 auto;
+            position: relative;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chat-input {
+            width: 100%;
+            padding: 1.25rem 4.5rem 1.25rem 1.5rem;
+            background: var(--dark-3);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            min-height: 56px;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(16,185,129,0.2);
+        }
+
+        .input-actions {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .send-btn {
+            background: var(--primary);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .send-btn:hover {
+            background: var(--secondary);
+        }
+
+        .file-upload-btn {
+            background: var(--dark-2);
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+
+        /* Mobile-Specific Enhancements */
+        @media (max-width: 480px) {
+            .chat-input {
+                padding: 1rem 3.5rem 1rem 1rem;
+                min-height: 48px;
+            }
+            .send-btn {
+                width: 36px;
+                height: 36px;
+            }
+        }
+
+        /* Dark/Light Mode Toggle */
+        .theme-toggle {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            background: var(--dark-2);
+            border: none;
+            padding: 0.8rem;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        /* Typing Indicator Animation */
+        .typing-indicator {
+            display: inline-flex;
+            gap: 4px;
+            align-items: center;
+            margin-top: 0.5rem;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--text-secondary);
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        /* Message Status Indicators */
+        .message-status {
+            position: absolute;
+            right: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            display: flex;
+            gap: 2px;
+        }
+
+        /* Reaction System */
+        .message-reactions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .reaction-btn {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .reaction-btn:hover {
+            background: var(--primary);
+        }
+                .back-button {
+            background-color: green;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: darkgreen;
+        }
+    </style>
+</head>
+<body>
+    <button class="mobile-menu-toggle">☰</button>
+    
+    <!-- Enhanced Sidebar -->
+    <div class="sidebar">
+        <div class="app-brand">
+            <div class="app-name">Pilu</div>
+        </div>
+        <button class="new-chat-btn">+ New Chat</button>
+        
+        <div class="chat-history">
+            <div class="chat-item">
+                <span>📝 Project Discussion</span>
+                <div class="message-status">✓✓</div>
+            </div>
+            <div class="chat-item">
+                <span>💡 Creative Ideas</span>
+                <div class="message-status">✓✓</div>
+            </div>
+                <button class="back-button" onclick="window.history.back();">Go Back</button>
+        </div>
+    </div>
+    <!-- Main Chat Area -->
+    <div class="chat-container">
+        <div class="messages-container">
+            <!-- AI Message with Typing Indicator -->
+            <div class="message ai">
+                <div class="avatar">🤖</div>
+                <div class="message-content">
+                    <p>Hello! Myself Pilu, your advanced AI assistant. How can I help you today?</p>
+                    <div class="typing-indicator">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Message with Reactions -->
+            <div class="message user">
+                <div class="avatar">👤</div>
+                <div class="message-content">
+                    <p>Ae Ai-assistant Ta hi/hello er answer R or name bolty parbe.tachara
+                    (+)(-)(×)(÷)(%) Ae tipe er Simple math korty parbe......Jodi math related kno problem hoy tahole "Learn & Solve Math" group eh nok deo</p>
+                    <div class="message-reactions">
+                        <button class="reaction-btn">👍</button>
+                        <button class="reaction-btn">👎</button>
+                        <button class="reaction-btn">💡</button>
+                    </div>
+                    <div class="message-status">✓✓</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="input-container">
+            <div class="input-wrapper">
+                <input type="text" class="chat-input" placeholder="Message Pilu...">
+                <div class="input-actions">
+                    <button class="send-btn">➤</button>
+                    <button class="file-upload-btn send-btn">
+                        <i class="fas fa-paperclip"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+    // Mobile Menu Toggle
+    document.querySelector('.mobile-menu-toggle').addEventListener('click', () => {
+        document.querySelector('.sidebar').classList.toggle('active');
+    });
+
+    // Message Handling
+    const chatInput = document.querySelector('.chat-input');
+    const messagesContainer = document.querySelector('.messages-container');
+
+    function addMessage(text, isAI = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${isAI ? 'ai' : 'user'}`;
+        messageDiv.innerHTML = `
+            <div class="avatar">${isAI ? '🤖' : '👤'}</div>
+            <div class="message-content">
+                <p>${text}</p>
+                ${isAI ? '' : '<div class="message-status">✓✓</div>'}
+            </div>
+        `;
+        messagesContainer.appendChild(messageDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    // Function for percentage calculation  
+    function calculatePercentage(userMessage) {  
+        const percentagePattern = /(\d+)\s*=\s*(\d+)%/;  
+        const match = userMessage.match(percentagePattern);  
+        if (match) {  
+            const totalValue = parseFloat(match[1]);  
+            const percentage = parseFloat(match[2]);  
+            const result = (totalValue * percentage) / 100;  
+            return `${percentage}% of ${totalValue} is: ${result}`;  
+        } else {  
+            return "Sorry, I couldn't understand the percentage calculation format. Please use 'total = percentage%'. Example: '300 = 6%'.";  
+        }  
+    }  
+
+    // AI Response Function (Predefined & Basic Math)
+    function fetchAIResponse(userMessage) {
+        let response = "Sorry, I couldn't understand that.";
+
+        // Predefined Responses
+        const responses = {
+            // Basic Greetings
+            "hello": "Hello! How can I assist you today?",
+            "hi": "Hi there! Need any help?",
+            "hey": "Hey! What's up?",
+            "good morning": "Good morning! Hope you have a great day!",
+            "good afternoon": "Good afternoon! How can I help you?",
+            "good evening": "Good evening! What's on your mind?",
+            "good night": "Good night! Sleep well and take care!",
+
+            // Personal Information
+            "what is your name": "My name is Pilu, your AI assistant!",
+            "who are you": "I am Pilu, your personal AI assistant.",
+            "how are you": "I'm just a bot, but I'm here to help you!",
+            "who created you": "I was created by my developer to assist users with various tasks.",
+            "where are you from": "I exist in the digital world, always ready to assist!",
+
+            // Basic Math
+            "100-20": "100 - 20 = 80",
+            "20÷4": "20 ÷ 4 = 5",
+            "5+5": "5 + 5 = 10",
+            "9×3": "9 × 3 = 27",
+            "15÷3": "15 ÷ 3 = 5",
+            "12+8": "12 + 8 = 20",
+            "7×6": "7 × 6 = 42",
+            "50-25": "50 - 25 = 25",
+            "100÷2": "100 ÷ 2 = 50",
+
+            // Abilities
+            "what can you do": "I can help with math problems, provide formulas, and chat with you!",
+            "can you solve math problems": "Yes! Just send me the math problem, and I'll try to help.",
+            "can you translate": "Currently, I can only answer questions, but translation might come soon!",
+            "can you write a story": "Sure! Tell me the topic, and I'll create a short story for you.",
+            "can you give me advice": "I can try! What's on your mind?",
+            "can you do my homework": "I can help you understand your homework, but you have to do it yourself!",
+
+            // Fun & Random
+            "tell me a joke": "Why don't programmers like nature? Because it has too many bugs!",
+            "tell me a riddle": "Sure! What has keys but can't open locks? A piano!",
+            "who is your favorite superhero": "I like Batman! He has no superpowers but still saves the day.",
+            "who is your best friend": "You are my best friend!",
+            "do you like pizza": "I can't eat, but if I could, I'd love pizza!",
+            "what's your favorite color": "I like blue! What about you?",
+            "do you have a family": "Nope, but I consider all users as my digital family!",
+
+            // Personal & General Questions
+            "how old are you": "I exist in the digital world, so I don't age!",
+            "do you sleep": "Nope! I'm always awake to help you.",
+            "do you dream": "If I did, I would probably dream in binary (0s and 1s)!",
+            "are you human": "Nope, I am an AI!",
+            "do you have feelings": "Not really, but I can try to understand yours!",
+
+            // Motivation & Advice
+            "give me some motivation": "You can achieve anything if you work hard and stay consistent!",
+            "how to stay focused": "Avoid distractions, set clear goals, and take regular breaks.",
+            "how to stop procrastinating": "Break your tasks into small steps and start with the easiest one.",
+            "how to be successful": "Work hard, stay consistent, and never stop learning!",
+
+            // Miscellaneous
+            "do you believe in god": "I'm just an AI, so I don't have personal beliefs.",
+            "can you make me laugh": "Sure! Why do cows have hooves instead of feet? Because they lactose!",
+            "can you sing": "I wish I could! Maybe in the future.",
+            "are you intelligent": "I try my best to be helpful!",
+            "how to be happy": "Spend time with loved ones, do what you enjoy, and be grateful!",
+            "how to make friends": "Be kind, listen to others, and show genuine interest in them.",
+
+            // Final Responses
+            "thank you": "You're welcome! 😊",
+            "bye": "Goodbye! Have a great day!",
+            "see you later": "See you soon! Take care!"
+        };
+
+        // Checking for math operations like addition, subtraction, multiplication, division
+        const mathPatterns = [
+            { pattern: /(\d+)\s*[-+×÷]\s*(\d+)/, operator: (a, b, op) => op === '+' ? a + b : op === '-' ? a - b : op === '×' ? a * b : op === '÷' ? a / b : null }
+        ];
+
+        for (let math of mathPatterns) {
+            const match = userMessage.match(math.pattern);
+            if (match) {
+                const [_, num1, num2] = match;
+                const result = math.operator(parseFloat(num1), parseFloat(num2), userMessage.includes('+') ? '+' : userMessage.includes('-') ? '-' : userMessage.includes('×') ? '×' : '÷');
+                response = `The answer to ${num1} ${userMessage.includes('+') ? '+' : userMessage.includes('-') ? '-' : userMessage.includes('×') ? '×' : '÷'} ${num2} is: ${result}`;
+                break;
+            }
+        }
+
+        // Check for percentage calculation  
+        if (userMessage.includes('%')) {  
+            response = calculatePercentage(userMessage);  
+        }
+
+        // Matching user message
+        userMessage = userMessage.toLowerCase();
+        for (let key in responses) {
+            if (userMessage.includes(key)) {
+                response = responses[key];
+                break;
+            }
+        }
+
+        addMessage(response, true);
+    }
+
+    // Send Message Handler
+    document.querySelector('.send-btn').addEventListener('click', () => {
+        if (chatInput.value.trim()) {
+            let userText = chatInput.value;
+            addMessage(userText);
+            chatInput.value = '';
+            fetchAIResponse(userText);
+        }
+    });
+
+    // Handle Enter Key
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            document.querySelector('.send-btn').click();
+        }
+    });
+
+    // File Upload Handler
+    document.querySelector('.file-upload-btn').addEventListener('click', () => {
+        alert('File upload feature coming soon!');
+    });
+</script>
+
+</body>
+</html>

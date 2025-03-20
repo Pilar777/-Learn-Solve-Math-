@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Note's</title>
+    <style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f5e6d3 0%, #e7d8c8 100%);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 30px;
+        background: linear-gradient(145deg, #5d4c3c 0%, #4a3b2e 100%);
+        color: white;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        position: relative;
+        z-index: 1000;
+    }
+
+    .menu-btn {
+        font-size: 28px;
+        color: #c4a47e;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .menu-btn:hover {
+        color: #e6d5c3;
+    }
+
+    .profile-img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 2px solid #c4a47e;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .sidebar {
+        position: fixed;
+        left: -300px;
+        top: 0;
+        height: 100%;
+        width: 300px;
+        background: linear-gradient(160deg, #5d4c3c 0%, #4a3b2e 100%);
+        transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 999;
+        padding-top: 80px;
+        box-shadow: 5px 0 25px rgba(0,0,0,0.3);
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    .sidebar ul {
+        list-style: none;
+        padding: 0 25px;
+    }
+
+    .sidebar ul li {
+        padding: 18px 25px;
+        margin: 12px 0;
+        color: #e6d5c3;
+        font-size: 17px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.3s;
+        background: rgba(255,255,255,0.05);
+    }
+
+    .sidebar ul li:hover {
+        background: rgba(196, 164, 126, 0.15);
+        transform: translateX(10px);
+    }
+
+    .container {
+        flex-grow: 1;
+        max-width: 900px;
+        margin: 40px auto;
+        background: rgba(255,255,255,0.95);
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        position: relative;
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(196, 164, 126, 0.2);
+    }
+
+    h2 {
+        font-family: 'Roboto Slab', serif;
+        color: #5d4c3c;
+        border-bottom: 3px solid #c4a47e;
+        padding-bottom: 12px;
+        margin-bottom: 30px;
+        font-size: 2.2em;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .note-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .note-item {
+        padding: 20px;
+        margin: 20px 0;
+        background: #fff;
+        border-left: 5px solid #c4a47e;
+        transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+        border-radius: 8px;
+        position: relative;
+        overflow: hidden;
+        padding-right: 120px; /* ডিলিট বাটনের জন্য স্পেস */
+    }
+
+    .note-item:hover {
+        transform: translateX(15px);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.12);
+    }
+
+    .note-item::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent 0%, rgba(196, 164, 126, 0.05) 100%);
+        z-index: 1;
+    }
+
+    /* ডিলিট বাটন স্টাইল যোগ করা হয়েছে */
+    .delete-btn {
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%);
+        color: white;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: 0.3s;
+        z-index: 2;
+        font-weight: 500;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    }
+
+    .delete-btn:hover {
+        background: linear-gradient(135deg, #ff5252 0%, #ff3838 100%);
+        transform: translateY(-50%) scale(1.05);
+    }
+
+    .new-note-btn {
+        position: fixed;
+        bottom: 40px;
+        right: 40px;
+        background: linear-gradient(135deg, #5d4c3c 0%, #4a3b2e 100%);
+        color: white;
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        border: none;
+        font-size: 32px;
+        cursor: pointer;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+        transition: 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .new-note-btn:hover {
+        transform: scale(1.15) rotate(180deg);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+    }
+
+    #modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.6);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        backdrop-filter: blur(5px);
+        z-index: 2000;
+    }
+
+    .modal-content {
+        background: linear-gradient(145deg, #ffffff 0%, #f9f6f2 100%);
+        padding: 30px;
+        border-radius: 20px;
+        width: 500px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+        border: 1px solid rgba(196, 164, 126, 0.3);
+    }
+
+    .modal-content h3 {
+        color: #5d4c3c;
+        font-size: 24px;
+        margin-bottom: 25px;
+        text-align: center;
+    }
+
+    .modal-content textarea {
+        width: 100%;
+        height: 200px;
+        padding: 15px;
+        margin: 15px 0;
+        border: 2px solid #c4a47e;
+        border-radius: 10px;
+        resize: none;
+        font-size: 16px;
+        background: rgba(255,255,255,0.8);
+        transition: 0.3s;
+    }
+
+    .modal-content textarea:focus {
+        background: #fff;
+        box-shadow: 0 0 10px rgba(196, 164, 126, 0.3);
+        outline: none;
+    }
+
+    .modal-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: flex-end;
+    }
+
+    .modal-content button {
+        background: linear-gradient(135deg, #5d4c3c 0%, #4a3b2e 100%);
+        color: white;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.3s;
+        font-size: 16px;
+        letter-spacing: 0.5px;
+    }
+
+    .modal-content button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            margin: 20px;
+            padding: 25px;
+        }
+
+        .sidebar {
+            width: 260px;
+        }
+
+        .modal-content {
+            width: 90%;
+            padding: 20px;
+        }
+
+        .note-item {
+            padding-right: 100px;
+        }
+
+        .delete-btn {
+            padding: 6px 15px;
+            font-size: 14px;
+        }
+    }
+</style>
+</head>
+<body>
+    <header>
+        <div class="menu-btn" onclick="toggleSidebar()">☰</div>
+        <img class="profile-img" src="images/img (k).jpg" alt="Profile">
+    </header>
+
+    <nav class="sidebar">
+        <ul>
+            <li onclick="window.history.back()">← Back</li>
+            <li>All Notes</li>
+            <li>Favorites</li>
+            <li>Categories</li>
+            <li>Archived</li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h2>📖 My Notes</h2>
+        <ol class="note-list" id="note-list"></ol>
+    </div>
+
+    <button class="new-note-btn" onclick="showModal()">+</button>
+
+    <div id="modal">
+        <div class="modal-content">
+            <h3>Create New Note</h3>
+            <textarea id="note-text" rows="6"></textarea>
+            <div style="margin-top: 20px; text-align: right;">
+                <button onclick="addNote()">Save</button>
+                <button onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+        const firebaseConfig = {
+            databaseURL: "https://note-s-86225-default-rtdb.firebaseio.com/"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase();
+        const notesRef = ref(db, 'notes');
+
+        // Sidebar Functions
+        window.toggleSidebar = () => {
+            document.querySelector('.sidebar').classList.toggle('active');
+        }
+
+        document.addEventListener('click', (e) => {
+            const sidebar = document.querySelector('.sidebar');
+            if (!sidebar.contains(e.target) && !e.target.closest('.menu-btn')) {
+                sidebar.classList.remove('active');
+            }
+        });
+
+        // Note Functions
+        onValue(notesRef, (snapshot) => {
+            const notes = snapshot.val();
+            const noteList = document.getElementById("note-list");
+            noteList.innerHTML = "";
+
+            if (notes) {
+                Object.entries(notes).forEach(([id, note]) => {
+                    const noteEl = document.createElement('li');
+                    noteEl.className = 'note-item';
+                    noteEl.innerHTML = `
+                        <div>${note.text}</div>
+                        <div style="color: #666; margin-top: 10px;">
+                            ${new Date(note.timestamp).toLocaleString()}
+                        </div>
+                        <button class="delete-btn" onclick="deleteNote('${id}')">Delete</button>
+                    `;
+                    noteList.appendChild(noteEl);
+                });
+            }
+        });
+
+        window.deleteNote = (id) => {
+            if (confirm("Delete this note permanently?")) {
+                remove(ref(db, `notes/${id}`));
+            }
+        }
+
+        window.addNote = () => {
+            const text = document.getElementById('note-text').value.trim();
+            if (!text) return alert("Please write something!");
+
+            push(notesRef, {
+                text: text,
+                timestamp: new Date().getTime()
+            });
+            
+            closeModal();
+        }
+
+        // Modal Functions
+        window.showModal = () => {
+            document.getElementById('modal').style.display = 'flex';
+            document.getElementById('note-text').focus();
+        }
+
+        window.closeModal = () => {
+            document.getElementById('modal').style.display = 'none';
+            document.getElementById('note-text').value = '';
+        }
+
+        // Close modal on outside click
+        document.getElementById('modal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) closeModal();
+        });
+    </script>
+</body>
+</html>

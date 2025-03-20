@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Puzzle Master</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Custom CSS Reset */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Global Styles */
+        :root {
+            --primary-color: #00f3ff;
+            --secondary-color: #7b61ff;
+            --dark-bg: #0a0e1a;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+        }
+
+        body {
+            background: var(--dark-bg);
+            font-family: 'Poppins', sans-serif;
+            color: white;
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Preloader */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark-bg);
+            display: grid;
+            place-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s;
+        }
+
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--primary-color);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Header */
+        .hero {
+            text-align: center;
+            padding: 4rem 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, 
+                transparent 20%, 
+                var(--primary-color) 50%, 
+                transparent 80%);
+            animation: gradientFlow 8s linear infinite;
+            opacity: 0.1;
+        }
+
+        @keyframes gradientFlow {
+            to { transform: rotate(360deg); }
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            position: relative;
+            text-shadow: 0 0 30px rgba(0, 243, 255, 0.3);
+        }
+
+        /* Game Grid */
+        .game-grid {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        /* Game Card */
+        .game-card {
+            background: var(--glass-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.4s, box-shadow 0.4s;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-image {
+            height: 250px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(transparent 60%, rgba(0, 0, 0, 0.8));
+        }
+
+        .card-content {
+            padding: 2rem;
+            position: relative;
+        }
+
+        .difficulty-badge {
+            position: absolute;
+            top: -20px;
+            right: 20px;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 243, 255, 0.3);
+        }
+
+        .play-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50px;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .play-btn i {
+            transition: transform 0.3s;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(0, 243, 255, 0.4);
+        }
+
+        .play-btn:hover i {
+            transform: rotate(90deg);
+        }
+
+        /* Particles */
+        #particles-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .game-grid {
+                grid-template-columns: 1fr;
+                padding: 0 1rem;
+            }
+
+            .card-image {
+                height: 200px;
+            }
+        }/* Back button styling */
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    background-color: #3498db; /* Button color */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.back-btn i {
+    margin-right: 8px; /* Space between icon and text */
+}
+
+.back-btn:hover {
+    background-color: #2980b9; /* Darker shade on hover */
+    transform: translateX(-5px); /* Slight shift to the left on hover */
+}
+
+.back-btn:focus {
+    outline: none;
+}
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div class="preloader">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1> Puzzle's Game's</h1>
+        <p>Unlock Your Creative Protential</p>
+    </section>
+<a href="about.html" class="back-btn">
+    <i class="fas fa-arrow-left"></i>Go back
+</a>
+    <!-- Game Grid -->
+    <main class="game-grid">
+        <!-- Level 1 -->
+<article class="game-card">
+    <div class="card-image" style="background-image: url('kbl.jpg')"></div>
+    <div class="card-content">
+        <span class="difficulty-badge">Beginner</span>
+        <h3>candy Mcq</h3>
+        <p>Start your journey with basic patterns</p>
+        <a href="level1.html" class="play-btn">
+            <span>View</span>
+            <i class="fas fa-play"></i>
+        </a>
+    </div>
+</article>
+
+        <!-- Level 2 -->
+<article class="game-card">
+    <div class="card-image" style="background-image: url('kbl2.jpg')"></div>
+    <div class="card-content">
+        <span class="difficulty-badge">Intermediate</span>
+        <h3>Spicy Chess</h3>
+        <p>Master Iq Puzzle</p>
+        <a href="level2.html" class="play-btn">
+            <span>View</span>
+            <i class="fas fa-play"></i>
+        </a>
+    </div>
+</article>
+
+        <!-- Add remaining 6 levels following same structure -->
+
+    </main>
+
+    <script>
+        // Preloader
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.querySelector('.preloader').style.opacity = '0';
+                setTimeout(() => {
+                    document.querySelector('.preloader').remove();
+                }, 500);
+            }, 1500);
+        });
+
+        // Particle System
+        class ParticleSystem {
+            constructor() {
+                this.canvas = document.createElement('canvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.particles = [];
+                this.canvas.id = 'particles-canvas';
+                document.body.prepend(this.canvas);
+                
+                this.init();
+                this.animate();
+                window.addEventListener('resize', this.resize.bind(this));
+            }
+
+            init() {
+                this.resize();
+                for(let i = 0; i < 100; i++) {
+                    this.particles.push({
+                        x: Math.random() * this.canvas.width,
+                        y: Math.random() * this.canvas.height,
+                        size: Math.random() * 2 + 1,
+                        speedX: (Math.random() - 0.5) * 2,
+                        speedY: (Math.random() - 0.5) * 2
+                    });
+                }
+            }
+
+            resize() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            }
+
+            animate() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                this.particles.forEach(particle => {
+                    particle.x += particle.speedX;
+                    particle.y += particle.speedY;
+
+                    if(particle.x > this.canvas.width) particle.x = 0;
+                    if(particle.x < 0) particle.x = this.canvas.width;
+                    if(particle.y > this.canvas.height) particle.y = 0;
+                    if(particle.y < 0) particle.y = this.canvas.height;
+
+                    this.ctx.beginPath();
+                    this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                    this.ctx.fillStyle = `rgba(0, 243, 255, ${Math.random() * 0.4})`;
+                    this.ctx.fill();
+                });
+
+                requestAnimationFrame(this.animate.bind(this));
+            }
+        }
+
+        // Initialize
+        new ParticleSystem();
+
+        // Card Hover Effect
+        document.querySelectorAll('.game-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                card.style.transform = `
+                    perspective(1000px)
+                    rotateX(${(y - rect.height/2) / 10}deg)
+                    rotateY(${-(x - rect.width/2) / 10}deg)
+                    translateY(-10px)
+                `;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>
